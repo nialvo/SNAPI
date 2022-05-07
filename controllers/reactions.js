@@ -61,15 +61,15 @@ const reactions = {
             Reaction.findOneAndDelete({ _id: req.params.reactionId })
             .then((data) => {
                 try {
-                    User.findOneAndUpdate(//decrement reaction count and remove id from user
+                    User.findOneAndUpdate(//decrement reaction count and remove reaction id from user
                         { name: data.name },
-                        { $pull: { reactions: data._id }, $inc: { reactionNum: -1 } },  
+                        { $pull: { reactions: req.params.reactionId }, $inc: { reactionNum: -1 } },  
                     );
                 } catch { m = m + ", no user associated";//add notification if anonymous
                 } try {
                     Thought.findOneAndUpdate(//decrement reaction count and remove id from thought
-                        { _id: req.body.thoughtId },
-                        {  $pull: { reactions: data._id }, $inc: { reactionNum: -1} },
+                        { _id: req.params.thoughtId },
+                        {  $pull: { reactions: req.params.reactionId }, $inc: { reactionNum: -1} },
                     );
                 
                 } catch { m = m + ", no thought associated"//add notification if orphan

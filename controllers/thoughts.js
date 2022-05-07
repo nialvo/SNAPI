@@ -38,7 +38,7 @@ const thoughts = {
             .then((data) => {
                 try {
                     User.findOneAndUpdate(
-                        { _id: req.body.userId },
+                        { _id: req.body.id },
                         { $push: { thoughts: data._id }, $inc: { thoughtNum: 1 } },
                         { new: true }
                     ).then((userData) => {
@@ -60,16 +60,16 @@ const thoughts = {
     // update thought
     updateThought(req, res) {
         Thought.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { runValidators: true, new: true })
-            .then((data) => {
-                if (!data) {
-                    return res.status(404).json({ message: 'Wrong id' });
-                }
-                res.status(200).json(data);
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).json(err);
-            });
+        .then((data) => {
+            if (!data) {
+                return res.status(404).json({ message: 'Wrong id' });
+            }
+            res.status(200).json(data);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(err);
+        });
     },
 
     // delete thought
@@ -92,7 +92,7 @@ const thoughts = {
                 console.log(err);
                 res.status(500).json(err);
             });
-    },
+    }
 
 
 };

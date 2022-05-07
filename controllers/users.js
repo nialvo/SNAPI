@@ -14,7 +14,7 @@ const users = {
     },
 
     // get user by ID
-    getSingleUserId(req, res) {
+    getUserId(req, res) {
         User.findOne({ _id: req.params.id })
             .populate('friends')
             .populate('thoughts')
@@ -32,7 +32,7 @@ const users = {
     },
 
     // get user by name
-    getSingleUserName(req, res) {
+    getUserName(req, res) {
         User.findOne({ name: req.params.name })
             .populate('friends')
             .populate('thoughts')
@@ -77,15 +77,15 @@ const users = {
     },
 
     // delete user by ID
-    deleteUser(req, res) {
+    deleteUserId(req, res) {
         User.findOneAndDelete({ _id: req.params.id })
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
 
-                Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
-                Reaction.deleteMany({ _id: { $in: dbUserData.reactions } });
+                Thought.deleteMany({ _id: { $in: data.thoughts } });
+                Reaction.deleteMany({ _id: { $in: data.reactions } });
             })
             .then(() => {
                 res.json({ message: 'User deleted' });
@@ -97,15 +97,15 @@ const users = {
     },
 
     // delete user by name
-    deleteUser(req, res) {
-        User.findOneAndDelete({ _id: req.params.name })
+    deleteUserName(req, res) {
+        User.findOneAndDelete({ name: req.params.name })
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong name' });
                 }
 
-                Thought.deleteMany({ _id: { $in: dbUserData.thoughts } });
-                Reaction.deleteMany({ _id: { $in: dbUserData.reactions } });
+                Thought.deleteMany({ _id: { $in: data.thoughts } });
+                Reaction.deleteMany({ _id: { $in: data.reactions } });
             })
             .then(() => {
                 res.json({ message: 'User deleted' });
