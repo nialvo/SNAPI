@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-import dateFormat from "dateformat";
+const dateFormat = require ('../lib/dateformat.js');
 
 const reactionSchema = new Schema(
     {
