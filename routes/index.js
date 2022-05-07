@@ -11,15 +11,15 @@ THOUGHTS<br>
 get all thoughts: GET ${home}/api/thoughts <br> 
 get single thought: GET ${home}/api/thoughts/:thoughtID <br> 
 post new thought: POST ${home}/api/thoughts <br> 
-body: { "id": "user ID", "content": "content" } <br> 
+body: { "author": "user ID", "content": "content" } <br> 
 update thought: PUT ${home}/api/thoughts/:thoughtID <br>  
 body: { "content": "content" } <br> 
 delete thought: DELETE ${home}/api/thoughts/:thoughtID <br> <br>
 
 REACTIONS <br>
-post new reaction: ${home}/api/reactions/new/:thoughtId/:userId <br>
+post new reaction: POST ${home}/api/reactions/new/:thoughtId/:userId <br>
 body: {"content": "content"}<br>
-delete reaction: ${home}/api/reactions/delete/:thoughtId/:reactionId <br> <br>
+delete reaction: DELETE ${home}/api/reactions/delete/:thoughtId/:reactionId <br> <br>
 
 USERS <br>
 get all users: GET ${home}/api/users/ <br>

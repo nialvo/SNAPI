@@ -14,6 +14,7 @@ const reactions = {
                         { $push: { reactions: data._id }, $inc: { reactionNum: 1 } },
                         { new: true }
                     ).then((userData) => {
+                        return res.status(404).json({userData});
                         Reaction.findOneAndUpdate(
                             { _id: data._id },
                             { name: userData.name },

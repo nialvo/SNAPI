@@ -20,6 +20,7 @@ const thoughts = {
     getThought(req, res) {
         Thought.findOne({ _id: req.params.id })
             .populate('reactions')
+            .populate('author')
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
@@ -36,24 +37,19 @@ const thoughts = {
     newThought(req, res) {
         Thought.create(req.body)
             .then((data) => {
-                try {
-                    User.findOneAndUpdate(
-                        { _id: req.body.id },
-                        { $push: { thoughts: data._id }, $inc: { thoughtNum: 1 } },
-                        { new: true }
-                    ).then((userData) => {
-                        Thought.findOneAndUpdate(
-                            { _id: data._id },
-                            { name: userData.name },
-                        )
-                    })
-                } catch {
-                    return res.status(200).json({ message: "Anonymous thought created" });
-                }
-                res.status(200).json(data);
+                
+                return User.findOneAndUpdate(//add reference and increment count
+                            { _id: req.body.author },
+                            { $push: { thoughts: data._id }, $inc: { thoughtNum: 1 } },
+                            { new: true }
+                        ).then(()=>{
+                    res.status(200).json(data);
+                })                
+                   
+                
             }).catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(501).json(err);
             });
     },
 
@@ -79,15 +75,12 @@ const thoughts = {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
-                try {
-                    User.findOneAndUpdate(//remove reference and decrement count
-                        { name: data.name },
-                        { $pull: { thoughts: req.params.id }, $inc: { thoughtNum: -1 } }
-                    );
-                } catch {
-                    return res.status(200).json({ message: 'Anonymous thought deleted' });
-                }
-                res.status(200).json({ message: 'Thought deleted' });
+                
+                User.findOneAndUpdate(//remove reference and decrement count
+                    { _id: data.author },
+                    { $pull: { thoughts: req.params.id }, $inc: { thoughtNum: -1 } }
+                    ).then(()=>{res.status(200).json({ message: 'Thought deleted' })});
+
             }).catch((err) => {
                 console.log(err);
                 res.status(500).json(err);

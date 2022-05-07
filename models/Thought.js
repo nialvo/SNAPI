@@ -13,8 +13,9 @@ const thoughtSchema = new Schema(
         },
         name: {
             type: String,
-            required: true
+            default: ""
         },
+        author: { type: Schema.Types.ObjectId, ref: 'User' },
         reactions: [{ type: Schema.Types.ObjectId, ref: 'Reaction' }],
         reactionNum: {
             type: Number,
@@ -22,9 +23,7 @@ const thoughtSchema = new Schema(
         },
 
     },
-    {
-        versionKey: false 
-    }
+    
 );
 
 const Thought = model('Thought', thoughtSchema);

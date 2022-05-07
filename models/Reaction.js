@@ -10,16 +10,14 @@ const reactionSchema = new Schema(
         },
         name: {
             type: String,
-            required: true
+            default: "",
         },
         date: {
             type: String,
             default: dateFormat()
         },
     },
-    {
-        versionKey: false
-    }
+   
 );
 
 const Reaction = model('Reaction', reactionSchema);
