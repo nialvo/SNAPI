@@ -5,7 +5,15 @@ const thoughts = {
     // get list of thoughts
     getThoughts(req, res) {
         Thought.find()
-            .populate('reactions')
+            .populate('author','name')
+            .populate({
+                path:'reactions',
+                select: 'content',
+                populate:{
+                    path: 'author',
+                    select: 'name'
+                }
+            })
             .sort('date')
             .then((data) => {
                 res.status(200).json(data);
@@ -19,8 +27,15 @@ const thoughts = {
     // get thought by id
     getThought(req, res) {
         Thought.findOne({ _id: req.params.id })
-            .populate('reactions')
-            .populate('author')
+            .populate({
+                path:'reactions',
+                select: 'content',
+                populate:{
+                    path: 'author',
+                    select: 'name'
+                }
+            })
+            .populate('author', 'name')
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });

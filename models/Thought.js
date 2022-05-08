@@ -11,10 +11,6 @@ const thoughtSchema = new Schema(
             type: String,
             default: dateFormat()
         },
-        name: {
-            type: String,
-            default: ""
-        },
         author: { type: Schema.Types.ObjectId, ref: 'User' },
         reactions: [{ type: Schema.Types.ObjectId, ref: 'Reaction' }],
         reactionNum: {

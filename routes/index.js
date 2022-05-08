@@ -17,20 +17,18 @@ body: { "content": "content" } <br>
 delete thought: DELETE ${home}/api/thoughts/:thoughtID <br> <br>
 
 REACTIONS <br>
-post new reaction: POST ${home}/api/reactions/new/:thoughtId/:userId <br>
-body: {"content": "content"}<br>
-delete reaction: DELETE ${home}/api/reactions/delete/:thoughtId/:reactionId <br> <br>
+post new reaction: POST ${home}/api/reactions/new/ <br>
+body: {"thought": "thought id", "author": "reaction author id", "content": "reaction content"}<br>
+delete reaction: DELETE ${home}/api/reactions/delete/:reactionId <br> <br>
 
 USERS <br>
 get all users: GET ${home}/api/users/ <br>
 get user by id: GET ${home}/api/users/id/:id <br>
-get user by name: GET ${home}/api/users/name/:name <br>
 create new user: POST ${home}/api/users/ <br>
 body: {"name": "name", "email": "email" } <br>
 update user name or email: PUT ${home}/api/users/id/:id <br>
 body: {"name": "name", "email": "email" } (both not required) <br>
 delete user by id: DELETE ${home}/api/users/id/:id <br>
-delete user by name: DELETE ${home}/api/users/name/:name <br>
 add friend: POST ${home}/api/users/friends/:userId/:friendId <br>
 remove friend: DELETE ${home}/api/users/friends/:userId/:friendId <br>
 `

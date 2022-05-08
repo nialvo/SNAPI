@@ -16,9 +16,9 @@ const users = {
     // get user by ID
     getUserId(req, res) {
         User.findOne({ _id: req.params.id })
-            .populate('friends')
-            .populate('thoughts')
-            .populate('reactions')
+            .populate('friends','name')
+            .populate('thoughts', 'content')
+            .populate('reactions','content')
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
@@ -31,32 +31,16 @@ const users = {
             });
     },
 
-    // get user by name
-    getUserName(req, res) {
-        User.findOne({ name: req.params.name })
-            .populate('friends')
-            .populate('thoughts')
-            .populate('reactions')
-            .then((data) => {
-                if (!data) {
-                    return res.status(404).json({ message: 'Wrong name' });
-                }
-                res.json(data);
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).json(err);
-            });
-    },
+   
 
     // new user
     newUser(req, res) {
         User.create(req.body)
             .then((data) => {
-                res.status(200).json(data.name);
+                res.status(200).json(data);
             }).catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                res.status(500).json({message:"use a different username or email"});
             });
     },
 
@@ -78,43 +62,33 @@ const users = {
 
     // delete user by ID
     deleteUserId(req, res) {
-        User.findOneAndDelete({ _id: req.params.id })
+        let datum ={a:""};//create object to store user data
+        
+        User.findOneAndDelete({ _id: req.params.id })//delete user
             .then((data) => {
+                datum.a=data;
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
-
-                Thought.deleteMany({ _id: { $in: data.thoughts } });
-                Reaction.deleteMany({ _id: { $in: data.reactions } });
+                
+                if(datum.a) return Thought.deleteMany({ _id: { $in: datum.a.thoughts } });//delete user's thoughts
             })
             .then(() => {
-                res.json({ message: 'User deleted' });
+
+                
+                if(datum.a) return Reaction.deleteMany({ _id: { $in: datum.a.reactions } });//delete user's reactions
+            })
+
+            .then(() => {
+                if(datum.a) res.json({ message: 'User deleted' });
             })
             .catch((err) => {
                 console.log(err);
-                res.status(500).json(err);
+                if(datum.a) res.status(500).json(err);
             });
     },
 
-    // delete user by name
-    deleteUserName(req, res) {
-        User.findOneAndDelete({ name: req.params.name })
-            .then((data) => {
-                if (!data) {
-                    return res.status(404).json({ message: 'Wrong name' });
-                }
-
-                Thought.deleteMany({ _id: { $in: data.thoughts } });
-                Reaction.deleteMany({ _id: { $in: data.reactions } });
-            })
-            .then(() => {
-                res.json({ message: 'User deleted' });
-            })
-            .catch((err) => {
-                console.log(err);
-                res.status(500).json(err);
-            });
-    },
+    
 
     // add friend 
     addFriend(req, res) {

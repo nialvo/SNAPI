@@ -8,10 +8,8 @@ const reactionSchema = new Schema(
             required: true,
             maxlength: 280
         },
-        name: {
-            type: String,
-            default: "",
-        },
+        thought: { type: Schema.Types.ObjectId, ref: 'Thought' }, 
+        author: { type: Schema.Types.ObjectId, ref: 'User' },
         date: {
             type: String,
             default: dateFormat()
