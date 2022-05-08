@@ -5,15 +5,6 @@ const thoughts = {
     // get list of thoughts
     getThoughts(req, res) {
         Thought.find()
-            .populate('author','name')
-            .populate({
-                path:'reactions',
-                select: 'content',
-                populate:{
-                    path: 'author',
-                    select: 'name'
-                }
-            })
             .sort('date')
             .then((data) => {
                 res.status(200).json(data);
@@ -32,15 +23,36 @@ const thoughts = {
                 select: 'content',
                 populate:{
                     path: 'author',
-                    select: 'name'
+                    select: 'name thoughts reactions friends'
                 }
             })
-            .populate('author', 'name')
+            .populate('author', 'name thoughts reactions friends')
             .then((data) => {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
-                res.status(200).json(data);
+                let singleThought = {
+                    id: data._id,
+                    content: data.content,
+                    date: data.date,
+                    authorID: data.author.id,
+                    authorName: data.author.name,
+                    
+                    reactions: data.reactions.map((a)=>{
+                        let h = {id: a._id, content : a.content, authorID : a.author._id, authorName : a.author.name };
+                        return h;
+                    }),
+                    reactionCount: data.reactionNum
+                    
+                }
+                res.status(200).json({singleThought});
+                //res.status(200).json({data});
+
+                    
+
+
+
+                
             })
             .catch((err) => {
                 console.log(err);
@@ -53,9 +65,9 @@ const thoughts = {
         Thought.create(req.body)
             .then((data) => {
                 
-                return User.findOneAndUpdate(//add reference and increment count
+                return User.findOneAndUpdate(//add reference 
                             { _id: req.body.author },
-                            { $push: { thoughts: data._id }, $inc: { thoughtNum: 1 } },
+                            { $push: { thoughts: data._id } },
                             { new: true }
                         ).then(()=>{
                     res.status(200).json(data);
@@ -91,9 +103,9 @@ const thoughts = {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
                 
-                User.findOneAndUpdate(//remove reference and decrement count
+                User.findOneAndUpdate(//remove reference 
                     { _id: data.author },
-                    { $pull: { thoughts: req.params.id }, $inc: { thoughtNum: -1 } }
+                    { $pull: { thoughts: req.params.id } }
                     ).then(()=>{res.status(200).json({ message: 'Thought deleted' })});
 
             }).catch((err) => {

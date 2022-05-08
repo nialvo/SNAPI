@@ -16,8 +16,8 @@ const users = {
     // get user by ID
     getUserId(req, res) {
         User.findOne({ _id: req.params.id })
-            .populate('friends','name')
-            .populate('thoughts', 'content')
+            .populate('friends','name thoughts reactions friends')
+            .populate('thoughts', 'content reactions')
             .populate('reactions','content')
             .then((data) => {
                 if (!data) {
