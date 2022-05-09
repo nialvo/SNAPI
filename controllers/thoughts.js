@@ -5,9 +5,25 @@ const thoughts = {
     // get list of thoughts
     getThoughts(req, res) {
         Thought.find()
+            .populate('author', 'name thoughts reactions friends')
+            .populate('reactions')
             .sort('date')
             .then((data) => {
-                res.status(200).json(data);
+                
+                let x = data.map((a)=>{
+                    let y = {
+                        thoughtID:a._id, content:a.content, date:a.date, 
+                        authorID:a.author._id, authorName:a.author.name,
+                        reactions: 
+                            a.reactions.map((b)=>{
+                                let z={reactionID:b._id, reaction:b.content}
+                                return z;
+                            }),
+                        reactionCount:a.reactionNum
+                    };
+                    return y;
+                });
+                res.status(200).json(x);
             })
             .catch((err) => {
                 console.log(err);
@@ -45,7 +61,7 @@ const thoughts = {
                     reactionCount: data.reactionNum
                     
                 }
-                res.status(200).json({singleThought});
+                res.status(200).json(singleThought);
                 //res.status(200).json({data});
 
                     

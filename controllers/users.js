@@ -23,14 +23,28 @@ const users = {
                 if (!data) {
                     return res.status(404).json({ message: 'Wrong id' });
                 }
-                res.json(data);
+
+                
+                let y = {
+                    _id:data._id, name:data.name, email:data.email,
+                    thoughtNum:data.thoughtNum, reactionNum:data.reactionNum, friendNum:data.friendNum,
+                    thoughts:data.thoughts, reactions:data.reactions,
+                    friends:data.friends.map((b)=>{
+                        let z={_id:b._id, name:b.name};
+                        return z;
+                    })
+                }
+                
+
+
+                res.json(y);
             })
             .catch((err) => {
                 console.log(err);
                 res.status(500).json(err);
             });
     },
-
+    
    
 
     // new user

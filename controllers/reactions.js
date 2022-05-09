@@ -69,7 +69,7 @@ const reactions = {
             
         }).then(() => {//return message
             datum.m = datum.m + ".";
-            return res.status(404).json({ message: datum.m });
+            return res.status(200).json({ message: datum.m });
            
         })
         .catch((err) => {
